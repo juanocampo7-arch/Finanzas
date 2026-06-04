@@ -525,7 +525,7 @@ async function cargarDatos() {
 }
 
 // ===== GUARDAR =====
-async function guardar() {
+window.guardar = async function() {
   const valor = parseFloat(document.getElementById('inp-valor').value);
   const desc = document.getElementById('inp-desc').value.trim();
   const fecha = document.getElementById('inp-fecha').value;
@@ -565,7 +565,7 @@ async function guardar() {
 }
 
 // ===== ELIMINAR =====
-async function eliminar(id) {
+window.eliminar = async function(id) {
   if(!confirm('¿Eliminar este movimiento?')) return;
   try {
     await deleteDoc(doc(db, COL, id));
