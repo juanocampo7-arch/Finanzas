@@ -32,7 +32,6 @@
   --radius-sm: 10px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; }
 body {
   font-family: 'DM Sans', sans-serif;
   background: var(--bg);
@@ -41,76 +40,74 @@ body {
   padding-bottom: 80px;
   max-width: 480px;
   margin: 0 auto;
-  position: relative;
 }
 h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
 
-/* NAV */
+/* LOADING */
+#loading-screen {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 999;
+  gap: 16px;
+}
+#loading-screen .logo { font-size: 48px; }
+#loading-screen p { color: var(--muted); font-size: 14px; }
+.spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
 nav {
-  position: fixed;
-  bottom: 0; left: 50%;
-  transform: translateX(-50%);
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
   width: 100%; max-width: 480px;
   background: var(--surface);
   border-top: 1px solid var(--border2);
-  display: flex;
-  z-index: 100;
+  display: flex; z-index: 100;
   padding: 8px 0 12px;
 }
 .nav-btn {
-  flex: 1;
-  background: none;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
-  padding: 4px 0;
+  flex: 1; background: none; border: none; color: var(--muted);
+  cursor: pointer; display: flex; flex-direction: column;
+  align-items: center; gap: 3px;
+  font-family: 'DM Sans', sans-serif; font-size: 10px; padding: 4px 0;
   transition: color 0.2s;
 }
 .nav-btn.active { color: var(--accent); }
 .nav-btn svg { width: 22px; height: 22px; stroke-width: 1.8; }
 
-/* HEADER */
 .header {
   padding: 24px 20px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
 }
 .header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-.header span { font-size: 13px; color: var(--muted); }
-.month-nav {
-  display: flex; align-items: center; gap: 8px;
+.sync-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); display: inline-block;
+  margin-left: 6px; vertical-align: middle;
 }
+.sync-dot.off { background: var(--danger); }
+.month-nav { display: flex; align-items: center; gap: 8px; }
 .month-nav button {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  width: 30px; height: 30px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text); width: 30px; height: 30px; border-radius: 8px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;
 }
 .month-nav span { font-size: 13px; font-weight: 500; min-width: 100px; text-align: center; }
 
-/* PAGES */
 .page { display: none; padding: 0 20px; animation: fadeIn 0.2s ease; }
 .page.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
-/* BALANCE CARD */
 .balance-card {
   background: linear-gradient(135deg, #1a2f1e 0%, #132030 100%);
   border: 1px solid rgba(74,222,128,0.2);
-  border-radius: var(--radius);
-  padding: 24px 20px;
-  margin-bottom: 16px;
+  border-radius: var(--radius); padding: 24px 20px; margin-bottom: 16px;
 }
 .balance-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
 .balance-amount { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--accent); letter-spacing: -1px; }
@@ -121,319 +118,154 @@ nav {
 .val.ingreso { color: var(--accent); }
 .val.gasto { color: var(--danger); }
 
-/* STAT CARDS */
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  text-align: center;
-}
-.stat-card .ic { font-size: 20px; margin-bottom: 4px; }
-.stat-card .s-val { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
-.stat-card .s-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
-
-/* SECTION TITLE */
 .section-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
   margin: 20px 0 10px;
 }
+.method-bars { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.method-bar-row { display: flex; align-items: center; gap: 10px; }
+.method-bar-name { font-size: 12px; width: 90px; flex-shrink: 0; }
+.method-bar-track { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.method-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.method-bar-val { font-size: 12px; font-weight: 600; width: 80px; text-align: right; flex-shrink: 0; }
 
-/* TRANSACTION LIST */
 .tx-list { display: flex; flex-direction: column; gap: 8px; }
 .tx-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: border-color 0.15s;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
 }
-.tx-item:hover { border-color: var(--border2); }
 .tx-icon {
-  width: 38px; height: 38px;
-  border-radius: 10px;
+  width: 38px; height: 38px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
+  font-size: 18px; flex-shrink: 0;
 }
+.tx-item[data-tipo="ingreso"] .tx-icon { background: rgba(74,222,128,0.12); }
+.tx-item[data-tipo="gasto"] .tx-icon { background: rgba(248,113,113,0.12); }
 .tx-info { flex: 1; min-width: 0; }
 .tx-desc { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tx-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
 .tx-amount { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; flex-shrink: 0; }
-.tx-item[data-tipo="ingreso"] .tx-icon { background: rgba(74,222,128,0.12); }
-.tx-item[data-tipo="gasto"] .tx-icon { background: rgba(248,113,113,0.12); }
-.badge {
-  font-size: 10px;
-  padding: 2px 7px;
-  border-radius: 20px;
-  font-weight: 500;
-}
+.badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 500; }
 .badge-nequi { background: rgba(139,92,246,0.15); color: var(--nequi); }
 .badge-bancolombia { background: rgba(59,130,246,0.15); color: var(--banco); }
 .badge-efectivo { background: rgba(16,185,129,0.15); color: var(--efectivo); }
 .badge-ingreso { background: rgba(74,222,128,0.1); color: var(--accent); }
 
-/* FORM */
 .form-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
 }
-.tipo-toggle {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 20px;
-}
+.tipo-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
 .tipo-btn {
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  color: var(--muted);
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--surface2); color: var(--muted);
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
 }
-.tipo-btn.active-ingreso {
-  background: rgba(74,222,128,0.1);
-  border-color: rgba(74,222,128,0.4);
-  color: var(--accent);
-}
-.tipo-btn.active-gasto {
-  background: rgba(248,113,113,0.1);
-  border-color: rgba(248,113,113,0.4);
-  color: var(--danger);
-}
+.tipo-btn.active-ingreso { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.4); color: var(--accent); }
+.tipo-btn.active-gasto { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.4); color: var(--danger); }
 .form-group { margin-bottom: 14px; }
 .form-group label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
 .form-group input, .form-group select {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  outline: none;
-  transition: border-color 0.2s;
-  appearance: none;
+  width: 100%; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px;
+  outline: none; transition: border-color 0.2s; appearance: none;
 }
 .form-group input:focus, .form-group select:focus { border-color: var(--accent2); }
 .form-group input[type="number"] { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent); }
-.method-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
+.method-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
 .method-btn {
-  padding: 10px 6px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  color: var(--muted);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  padding: 10px 6px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--surface2); color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
 }
 .method-btn .m-icon { font-size: 20px; }
 .method-btn.active-nequi { border-color: var(--nequi); background: rgba(139,92,246,0.12); color: var(--nequi); }
 .method-btn.active-bancolombia { border-color: var(--banco); background: rgba(59,130,246,0.12); color: var(--banco); }
 .method-btn.active-efectivo { border-color: var(--efectivo); background: rgba(16,185,129,0.12); color: var(--efectivo); }
-
+.cat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.cat-btn {
+  padding: 10px 6px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--surface2); color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.cat-btn .c-icon { font-size: 18px; }
+.cat-btn.active { border-color: var(--accent2); background: rgba(34,211,238,0.08); color: var(--accent2); }
 .submit-btn {
-  width: 100%;
-  padding: 16px;
-  border-radius: var(--radius-sm);
-  border: none;
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  letter-spacing: 0.3px;
+  width: 100%; padding: 16px; border-radius: var(--radius-sm); border: none;
+  font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px;
 }
 .submit-btn.ingreso-btn { background: var(--accent); color: #0b1a10; }
 .submit-btn.gasto-btn { background: var(--danger); color: #1a0808; }
 .submit-btn:active { transform: scale(0.98); }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* FILTROS */
 .filter-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: none;
+  display: flex; gap: 8px; margin-bottom: 14px;
+  overflow-x: auto; padding-bottom: 4px; scrollbar-width: none;
 }
 .filter-row::-webkit-scrollbar { display: none; }
 .filter-chip {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s;
-  flex-shrink: 0;
+  padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--muted);
+  font-size: 12px; font-weight: 500; cursor: pointer;
+  white-space: nowrap; transition: all 0.2s; flex-shrink: 0;
 }
 .filter-chip.active { border-color: var(--accent2); color: var(--accent2); background: rgba(34,211,238,0.08); }
 
-/* BARRAS DE MÉTODO */
-.method-bars { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-.method-bar-row { display: flex; align-items: center; gap: 10px; }
-.method-bar-name { font-size: 12px; width: 90px; flex-shrink: 0; }
-.method-bar-track {
-  flex: 1;
-  height: 6px;
-  background: var(--surface2);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.method-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
-.method-bar-val { font-size: 12px; font-weight: 600; width: 80px; text-align: right; flex-shrink: 0; }
-
-/* EMPTY */
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--muted);
-}
-.empty-state .big { font-size: 40px; margin-bottom: 10px; }
-.empty-state p { font-size: 14px; }
-
-/* DELETE BTN */
 .delete-btn {
-  background: rgba(248,113,113,0.1);
-  border: none;
-  color: var(--danger);
-  width: 28px; height: 28px;
-  border-radius: 7px;
-  cursor: pointer;
+  background: rgba(248,113,113,0.1); border: none; color: var(--danger);
+  width: 28px; height: 28px; border-radius: 7px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
-  transition: background 0.2s;
+  font-size: 14px; flex-shrink: 0; transition: background 0.2s;
 }
 .delete-btn:hover { background: rgba(248,113,113,0.2); }
 
-/* TOAST */
+.excel-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3);
+  color: var(--efectivo); padding: 12px 16px; border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; width: 100%; margin-bottom: 8px; transition: background 0.2s;
+}
+
 .toast {
-  position: fixed;
-  top: 20px;
-  left: 50%;
+  position: fixed; top: 20px; left: 50%;
   transform: translateX(-50%) translateY(-80px);
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  color: var(--text);
-  padding: 10px 20px;
-  border-radius: 30px;
-  font-size: 13px;
-  font-weight: 500;
-  z-index: 999;
-  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  white-space: nowrap;
+  background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--text); padding: 10px 20px; border-radius: 30px;
+  font-size: 13px; font-weight: 500; z-index: 9999;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap;
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
-/* EXCEL BTN */
-.excel-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(16,185,129,0.1);
-  border: 1px solid rgba(16,185,129,0.3);
-  color: var(--efectivo);
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom: 8px;
-  transition: background 0.2s;
-}
-.excel-btn:hover { background: rgba(16,185,129,0.15); }
-
-/* CATEGORÍAS */
-.cat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-.cat-btn {
-  padding: 10px 6px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  color: var(--muted);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.cat-btn .c-icon { font-size: 18px; }
-.cat-btn.active {
-  border-color: var(--accent2);
-  background: rgba(34,211,238,0.08);
-  color: var(--accent2);
-}
-
-/* PIE LEGEND */
-.pie-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-.pie-leg-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-.pie-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.pie-leg-name { flex: 1; }
-.pie-leg-val { font-weight: 600; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+.empty-state .big { font-size: 40px; margin-bottom: 10px; }
+.empty-state p { font-size: 14px; }
 </style>
 </head>
 <body>
 
-<!-- TOAST -->
+<div id="loading-screen">
+  <div class="logo">💸</div>
+  <div class="spinner"></div>
+  <p>Conectando con Firebase...</p>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<!-- HEADER -->
 <div class="header">
   <div>
-    <h1>💸 MisFinanzas</h1>
-    <span id="header-sub">Gestión personal</span>
+    <h1>💸 MisFinanzas <span class="sync-dot" id="sync-dot"></span></h1>
   </div>
   <div class="month-nav">
     <button onclick="changeMonth(-1)">‹</button>
@@ -442,140 +274,122 @@ nav {
   </div>
 </div>
 
-<!-- PAGES -->
-
-<!-- ===== DASHBOARD ===== -->
+<!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
   <div class="balance-card">
     <div class="balance-label">Balance del mes</div>
     <div class="balance-amount" id="dash-balance">$0</div>
     <div class="balance-sub">
-      <div class="balance-sub-item">
-        <div class="lbl">↑ Ingresos</div>
-        <div class="val ingreso" id="dash-ingresos">$0</div>
-      </div>
-      <div class="balance-sub-item">
-        <div class="lbl">↓ Gastos</div>
-        <div class="val gasto" id="dash-gastos">$0</div>
-      </div>
-      <div class="balance-sub-item">
-        <div class="lbl">Movimientos</div>
-        <div class="val" id="dash-count">0</div>
-      </div>
+      <div class="balance-sub-item"><div class="lbl">↑ Ingresos</div><div class="val ingreso" id="dash-ingresos">$0</div></div>
+      <div class="balance-sub-item"><div class="lbl">↓ Gastos</div><div class="val gasto" id="dash-gastos">$0</div></div>
+      <div class="balance-sub-item"><div class="lbl">Movimientos</div><div class="val" id="dash-count">0</div></div>
     </div>
   </div>
-
   <div class="section-title">Por método de pago</div>
   <div class="method-bars" id="method-bars"></div>
-
   <div class="section-title">Últimos movimientos</div>
   <div class="tx-list" id="recent-list"></div>
 </div>
 
-<!-- ===== NUEVO ===== -->
+<!-- NUEVO -->
 <div class="page" id="page-nuevo">
   <div class="form-card">
     <div class="tipo-toggle">
-      <button class="tipo-btn active-ingreso" id="btn-ingreso" onclick="setTipo('ingreso')">
-        <span>↑</span> Ingreso
-      </button>
-      <button class="tipo-btn" id="btn-gasto" onclick="setTipo('gasto')">
-        <span>↓</span> Gasto
-      </button>
+      <button class="tipo-btn active-ingreso" id="btn-ingreso" onclick="setTipo('ingreso')">↑ Ingreso</button>
+      <button class="tipo-btn" id="btn-gasto" onclick="setTipo('gasto')">↓ Gasto</button>
     </div>
-
     <div class="form-group">
       <label>Valor ($)</label>
       <input type="number" id="inp-valor" placeholder="0" min="0" inputmode="decimal">
     </div>
-
     <div class="form-group">
       <label>Descripción</label>
       <input type="text" id="inp-desc" placeholder="Ej: Turno domingo, Mercado...">
     </div>
-
-    <div class="form-group" id="cat-group">
+    <div class="form-group">
       <label>Categoría</label>
       <div class="cat-grid" id="cat-grid"></div>
     </div>
-
     <div class="form-group" id="method-group">
       <label>Método de pago</label>
       <div class="method-grid">
-        <button class="method-btn" id="m-nequi" onclick="setMethod('nequi')">
-          <span class="m-icon">💜</span>Nequi
-        </button>
-        <button class="method-btn" id="m-bancolombia" onclick="setMethod('bancolombia')">
-          <span class="m-icon">💙</span>Bancolombia
-        </button>
-        <button class="method-btn" id="m-efectivo" onclick="setMethod('efectivo')">
-          <span class="m-icon">💵</span>Efectivo
-        </button>
+        <button class="method-btn" id="m-nequi" onclick="setMethod('nequi')"><span class="m-icon">💜</span>Nequi</button>
+        <button class="method-btn" id="m-bancolombia" onclick="setMethod('bancolombia')"><span class="m-icon">💙</span>Bancolombia</button>
+        <button class="method-btn" id="m-efectivo" onclick="setMethod('efectivo')"><span class="m-icon">💵</span>Efectivo</button>
       </div>
     </div>
-
     <div class="form-group">
       <label>Fecha</label>
       <input type="date" id="inp-fecha">
     </div>
-
     <button class="submit-btn ingreso-btn" id="submit-btn" onclick="guardar()">Registrar Ingreso</button>
   </div>
 </div>
 
-<!-- ===== HISTORIAL ===== -->
+<!-- HISTORIAL -->
 <div class="page" id="page-historial">
   <div class="filter-row" id="filter-row">
-    <button class="filter-chip active" onclick="setFilter('todos', this)">Todos</button>
-    <button class="filter-chip" onclick="setFilter('ingreso', this)">Ingresos</button>
-    <button class="filter-chip" onclick="setFilter('gasto', this)">Gastos</button>
-    <button class="filter-chip" onclick="setFilter('nequi', this)">Nequi</button>
-    <button class="filter-chip" onclick="setFilter('bancolombia', this)">Bancolombia</button>
-    <button class="filter-chip" onclick="setFilter('efectivo', this)">Efectivo</button>
+    <button class="filter-chip active" onclick="setFilter('todos',this)">Todos</button>
+    <button class="filter-chip" onclick="setFilter('ingreso',this)">Ingresos</button>
+    <button class="filter-chip" onclick="setFilter('gasto',this)">Gastos</button>
+    <button class="filter-chip" onclick="setFilter('nequi',this)">Nequi</button>
+    <button class="filter-chip" onclick="setFilter('bancolombia',this)">Bancolombia</button>
+    <button class="filter-chip" onclick="setFilter('efectivo',this)">Efectivo</button>
   </div>
   <div class="tx-list" id="hist-list"></div>
 </div>
 
-<!-- ===== RESUMEN ===== -->
+<!-- RESUMEN -->
 <div class="page" id="page-resumen">
   <div class="section-title">Exportar datos</div>
-  <button class="excel-btn" onclick="exportExcel()">
-    <span>📊</span> Descargar Excel (mes actual)
-  </button>
-  <button class="excel-btn" onclick="exportExcelAll()" style="border-color:rgba(251,191,36,0.3);color:var(--warning);background:rgba(251,191,36,0.08)">
-    <span>📁</span> Descargar Excel (todos)
-  </button>
-
+  <button class="excel-btn" onclick="exportCSV()"><span>📊</span> Descargar CSV (mes actual)</button>
+  <button class="excel-btn" onclick="exportCSVAll()" style="border-color:rgba(251,191,36,0.3);color:var(--warning);background:rgba(251,191,36,0.08)"><span>📁</span> Descargar CSV (todos)</button>
   <div class="section-title">Gastos por categoría</div>
   <div id="cat-resumen"></div>
-
   <div class="section-title">Top gastos del mes</div>
   <div class="tx-list" id="top-gastos"></div>
 </div>
 
-<!-- NAV -->
 <nav>
-  <button class="nav-btn active" onclick="goPage('dashboard', this)">
+  <button class="nav-btn active" onclick="goPage('dashboard',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
     Inicio
   </button>
-  <button class="nav-btn" onclick="goPage('nuevo', this)">
+  <button class="nav-btn" onclick="goPage('nuevo',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
     Nuevo
   </button>
-  <button class="nav-btn" onclick="goPage('historial', this)">
+  <button class="nav-btn" onclick="goPage('historial',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
     Historial
   </button>
-  <button class="nav-btn" onclick="goPage('resumen', this)">
+  <button class="nav-btn" onclick="goPage('resumen',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-3 3"/></svg>
     Resumen
   </button>
 </nav>
 
-<script>
-// ===== DATA =====
-let datos = JSON.parse(localStorage.getItem('mf_datos') || '[]');
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAczkIdG-O29ee0jEttk4yfHbh_8WRX0R0",
+  authDomain: "finanzas-b99f7.firebaseapp.com",
+  projectId: "finanzas-b99f7",
+  storageBucket: "finanzas-b99f7.firebasestorage.app",
+  messagingSenderId: "869446729433",
+  appId: "1:869446729433:web:06ed7a322b140f4b5588c8",
+  measurementId: "G-99NER7W5J4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const COL = 'movimientos';
+
+// ===== STATE =====
+let datos = [];
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let tipoActual = 'ingreso';
@@ -584,56 +398,102 @@ let catActual = '';
 let filtroActual = 'todos';
 
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-
 const CATS_GASTO = [
-  {k:'comida', icon:'🍔', label:'Comida'},
-  {k:'transporte', icon:'🚌', label:'Transporte'},
-  {k:'servicios', icon:'💡', label:'Servicios'},
-  {k:'ropa', icon:'👕', label:'Ropa'},
-  {k:'salud', icon:'💊', label:'Salud'},
-  {k:'entretenimiento', icon:'🎮', label:'Entret.'},
-  {k:'mercado', icon:'🛒', label:'Mercado'},
-  {k:'deuda', icon:'💳', label:'Deuda'},
-  {k:'otro', icon:'📦', label:'Otro'},
+  {k:'comida',icon:'🍔',label:'Comida'},{k:'transporte',icon:'🚌',label:'Transporte'},
+  {k:'servicios',icon:'💡',label:'Servicios'},{k:'ropa',icon:'👕',label:'Ropa'},
+  {k:'salud',icon:'💊',label:'Salud'},{k:'entretenimiento',icon:'🎮',label:'Entret.'},
+  {k:'mercado',icon:'🛒',label:'Mercado'},{k:'deuda',icon:'💳',label:'Deuda'},
+  {k:'otro',icon:'📦',label:'Otro'},
 ];
-
 const CATS_INGRESO = [
-  {k:'turno', icon:'⏰', label:'Turno'},
-  {k:'deuda_cobrada', icon:'💰', label:'Deuda cobr.'},
-  {k:'transferencia', icon:'🏦', label:'Transf.'},
-  {k:'venta', icon:'🛍️', label:'Venta'},
-  {k:'salario', icon:'📅', label:'Salario'},
-  {k:'otro', icon:'📦', label:'Otro'},
+  {k:'turno',icon:'⏰',label:'Turno'},{k:'deuda_cobrada',icon:'💰',label:'Deuda cobr.'},
+  {k:'transferencia',icon:'🏦',label:'Transf.'},{k:'venta',icon:'🛍️',label:'Venta'},
+  {k:'salario',icon:'📅',label:'Salario'},{k:'otro',icon:'📦',label:'Otro'},
 ];
+const CAT_COLORS = {comida:'#f97316',transporte:'#3b82f6',servicios:'#fbbf24',ropa:'#ec4899',salud:'#ef4444',entretenimiento:'#8b5cf6',mercado:'#10b981',deuda:'#f43f5e',turno:'#22c55e',deuda_cobrada:'#06b6d4',transferencia:'#6366f1',venta:'#f59e0b',salario:'#84cc16',otro:'#6b7280'};
 
-const METHOD_ICONS = { nequi:'💜', bancolombia:'💙', efectivo:'💵' };
-const CAT_COLORS = { comida:'#f97316',transporte:'#3b82f6',servicios:'#fbbf24',ropa:'#ec4899',salud:'#ef4444',entretenimiento:'#8b5cf6',mercado:'#10b981',deuda:'#f43f5e',turno:'#22c55e',deuda_cobrada:'#06b6d4',transferencia:'#6366f1',venta:'#f59e0b',salario:'#84cc16',otro:'#6b7280' };
-
-function save() { localStorage.setItem('mf_datos', JSON.stringify(datos)); }
-
-function fmt(n) {
-  return '$' + Math.round(n).toLocaleString('es-CO');
-}
-
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-CO'); }
 function getMes() {
   return datos.filter(d => {
     const f = new Date(d.fecha + 'T12:00:00');
     return f.getMonth() === currentMonth && f.getFullYear() === currentYear;
   });
 }
+function setSyncDot(on) {
+  const d = document.getElementById('sync-dot');
+  d.className = 'sync-dot' + (on ? '' : ' off');
+}
 
-function changeMonth(dir) {
-  currentMonth += dir;
-  if(currentMonth > 11) { currentMonth = 0; currentYear++; }
-  if(currentMonth < 0) { currentMonth = 11; currentYear--; }
-  document.getElementById('month-label').textContent = MESES[currentMonth].substring(0,3) + ' ' + currentYear;
+// ===== FIREBASE LOAD =====
+async function cargarDatos() {
+  try {
+    const q = query(collection(db, COL), orderBy('fecha', 'desc'));
+    const snap = await getDocs(q);
+    datos = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
+    setSyncDot(true);
+  } catch(e) {
+    setSyncDot(false);
+    toast('⚠️ Sin conexión, modo offline');
+    datos = JSON.parse(localStorage.getItem('mf_backup') || '[]');
+  }
+  document.getElementById('loading-screen').style.display = 'none';
   renderDashboard();
-  renderHistorial();
-  renderResumen();
+}
+
+// ===== GUARDAR =====
+async function guardar() {
+  const valor = parseFloat(document.getElementById('inp-valor').value);
+  const desc = document.getElementById('inp-desc').value.trim();
+  const fecha = document.getElementById('inp-fecha').value;
+  if(!valor || valor <= 0) { toast('Ingresa un valor válido ⚠️'); return; }
+  if(!desc) { toast('Agrega una descripción ⚠️'); return; }
+  if(tipoActual === 'gasto' && !methodActual) { toast('Selecciona el método de pago ⚠️'); return; }
+  if(!fecha) { toast('Selecciona la fecha ⚠️'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+
+  const reg = {
+    tipo: tipoActual, valor, desc,
+    cat: catActual || 'otro',
+    metodo: tipoActual === 'gasto' ? methodActual : 'ingreso',
+    fecha,
+    creadoEn: new Date().toISOString()
+  };
+
+  try {
+    const docRef = await addDoc(collection(db, COL), reg);
+    reg._id = docRef.id;
+    datos.unshift(reg);
+    localStorage.setItem('mf_backup', JSON.stringify(datos));
+    toast((tipoActual==='ingreso'?'✅ Ingreso':'✅ Gasto') + ' registrado!');
+    document.getElementById('inp-valor').value = '';
+    document.getElementById('inp-desc').value = '';
+    catActual = ''; methodActual = '';
+    renderCats(); clearMethods();
+    renderDashboard();
+  } catch(e) {
+    toast('❌ Error al guardar');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Registrar ' + (tipoActual==='ingreso'?'Ingreso':'Gasto');
+}
+
+// ===== ELIMINAR =====
+async function eliminar(id) {
+  if(!confirm('¿Eliminar este movimiento?')) return;
+  try {
+    await deleteDoc(doc(db, COL, id));
+    datos = datos.filter(d => d._id !== id);
+    localStorage.setItem('mf_backup', JSON.stringify(datos));
+    renderHistorial(); renderDashboard();
+    toast('Eliminado ✓');
+  } catch(e) { toast('❌ Error al eliminar'); }
 }
 
 // ===== PAGES =====
-function goPage(p, btn) {
+window.goPage = function(p, btn) {
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('page-' + p).classList.add('active');
@@ -641,147 +501,54 @@ function goPage(p, btn) {
   if(p==='dashboard') renderDashboard();
   if(p==='historial') renderHistorial();
   if(p==='resumen') renderResumen();
-}
+};
 
-// ===== FORM =====
-function setTipo(t) {
-  tipoActual = t;
-  catActual = '';
-  methodActual = '';
-  document.getElementById('btn-ingreso').className = 'tipo-btn' + (t==='ingreso' ? ' active-ingreso' : '');
-  document.getElementById('btn-gasto').className = 'tipo-btn' + (t==='gasto' ? ' active-gasto' : '');
-  document.getElementById('submit-btn').className = 'submit-btn ' + (t==='ingreso' ? 'ingreso-btn' : 'gasto-btn');
-  document.getElementById('submit-btn').textContent = 'Registrar ' + (t==='ingreso' ? 'Ingreso' : 'Gasto');
-  document.getElementById('method-group').style.display = t==='gasto' ? '' : 'none';
-  renderCats();
-  clearMethods();
-}
+window.changeMonth = function(dir) {
+  currentMonth += dir;
+  if(currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if(currentMonth < 0) { currentMonth = 11; currentYear--; }
+  document.getElementById('month-label').textContent = MESES[currentMonth].substring(0,3)+' '+currentYear;
+  renderDashboard(); renderHistorial(); renderResumen();
+};
 
-function renderCats() {
-  const cats = tipoActual === 'gasto' ? CATS_GASTO : CATS_INGRESO;
-  const g = document.getElementById('cat-grid');
-  g.innerHTML = cats.map(c =>
-    `<button class="cat-btn${catActual===c.k ? ' active' : ''}" onclick="setCat('${c.k}')">
-      <span class="c-icon">${c.icon}</span>${c.label}
-    </button>`
-  ).join('');
-}
+window.setTipo = function(t) {
+  tipoActual = t; catActual = ''; methodActual = '';
+  document.getElementById('btn-ingreso').className = 'tipo-btn'+(t==='ingreso'?' active-ingreso':'');
+  document.getElementById('btn-gasto').className = 'tipo-btn'+(t==='gasto'?' active-gasto':'');
+  document.getElementById('submit-btn').className = 'submit-btn '+(t==='ingreso'?'ingreso-btn':'gasto-btn');
+  document.getElementById('submit-btn').textContent = 'Registrar '+(t==='ingreso'?'Ingreso':'Gasto');
+  document.getElementById('method-group').style.display = t==='gasto'?'':'none';
+  renderCats(); clearMethods();
+};
 
-function setCat(k) {
-  catActual = k;
-  renderCats();
-}
-
-function setMethod(m) {
-  methodActual = m;
-  clearMethods();
-  document.getElementById('m-'+m).className = 'method-btn active-'+m;
-}
-
-function clearMethods() {
-  ['nequi','bancolombia','efectivo'].forEach(m => {
-    const el = document.getElementById('m-'+m);
-    if(el) el.className = 'method-btn';
-  });
-  if(methodActual) document.getElementById('m-'+methodActual).className = 'method-btn active-'+methodActual;
-}
-
-function guardar() {
-  const valor = parseFloat(document.getElementById('inp-valor').value);
-  const desc = document.getElementById('inp-desc').value.trim();
-  const fecha = document.getElementById('inp-fecha').value;
-
-  if(!valor || valor <= 0) { toast('Ingresa un valor válido ⚠️'); return; }
-  if(!desc) { toast('Agrega una descripción ⚠️'); return; }
-  if(tipoActual === 'gasto' && !methodActual) { toast('Selecciona el método de pago ⚠️'); return; }
-  if(!fecha) { toast('Selecciona la fecha ⚠️'); return; }
-
-  const reg = {
-    id: Date.now(),
-    tipo: tipoActual,
-    valor,
-    desc,
-    cat: catActual || 'otro',
-    metodo: tipoActual === 'gasto' ? methodActual : 'ingreso',
-    fecha,
-  };
-
-  datos.push(reg);
-  save();
-  toast((tipoActual==='ingreso' ? '✅ Ingreso' : '✅ Gasto') + ' registrado!');
-
-  document.getElementById('inp-valor').value = '';
-  document.getElementById('inp-desc').value = '';
-  catActual = '';
-  methodActual = '';
-  renderCats();
-  clearMethods();
-}
-
-// ===== DASHBOARD =====
-function renderDashboard() {
-  const mes = getMes();
-  const ingresos = mes.filter(d=>d.tipo==='ingreso').reduce((a,b)=>a+b.valor,0);
-  const gastos = mes.filter(d=>d.tipo==='gasto').reduce((a,b)=>a+b.valor,0);
-  const balance = ingresos - gastos;
-
-  document.getElementById('dash-balance').textContent = fmt(balance);
-  document.getElementById('dash-balance').style.color = balance >= 0 ? 'var(--accent)' : 'var(--danger)';
-  document.getElementById('dash-ingresos').textContent = fmt(ingresos);
-  document.getElementById('dash-gastos').textContent = fmt(gastos);
-  document.getElementById('dash-count').textContent = mes.length;
-
-  // Method bars
-  const methods = ['nequi','bancolombia','efectivo'];
-  const mGastos = {};
-  methods.forEach(m => {
-    mGastos[m] = mes.filter(d=>d.tipo==='gasto'&&d.metodo===m).reduce((a,b)=>a+b.valor,0);
-  });
-  const maxM = Math.max(...Object.values(mGastos), 1);
-  const colors = {nequi:'var(--nequi)',bancolombia:'var(--banco)',efectivo:'var(--efectivo)'};
-  const icons = {nequi:'💜',bancolombia:'💙',efectivo:'💵'};
-  document.getElementById('method-bars').innerHTML = methods.map(m =>
-    `<div class="method-bar-row">
-      <span class="method-bar-name">${icons[m]} ${m.charAt(0).toUpperCase()+m.slice(1)}</span>
-      <div class="method-bar-track"><div class="method-bar-fill" style="width:${(mGastos[m]/maxM*100).toFixed(1)}%;background:${colors[m]}"></div></div>
-      <span class="method-bar-val" style="color:${colors[m]}">${fmt(mGastos[m])}</span>
-    </div>`
-  ).join('');
-
-  // Recent
-  const recientes = [...mes].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha)).slice(0,5);
-  document.getElementById('recent-list').innerHTML = recientes.length
-    ? recientes.map(d => txHTML(d)).join('')
-    : '<div class="empty-state"><div class="big">📭</div><p>Sin movimientos este mes</p></div>';
-}
-
-// ===== HISTORIAL =====
-function setFilter(f, el) {
+window.setMethod = function(m) { methodActual = m; clearMethods(); document.getElementById('m-'+m).className='method-btn active-'+m; };
+window.setCat = function(k) { catActual = k; renderCats(); };
+window.setFilter = function(f, el) {
   filtroActual = f;
   document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   renderHistorial();
+};
+
+function renderCats() {
+  const cats = tipoActual==='gasto' ? CATS_GASTO : CATS_INGRESO;
+  document.getElementById('cat-grid').innerHTML = cats.map(c =>
+    `<button class="cat-btn${catActual===c.k?' active':''}" onclick="setCat('${c.k}')"><span class="c-icon">${c.icon}</span>${c.label}</button>`
+  ).join('');
 }
 
-function renderHistorial() {
-  const mes = getMes();
-  let filtrado = mes;
-  if(filtroActual === 'ingreso') filtrado = mes.filter(d=>d.tipo==='ingreso');
-  else if(filtroActual === 'gasto') filtrado = mes.filter(d=>d.tipo==='gasto');
-  else if(['nequi','bancolombia','efectivo'].includes(filtroActual)) filtrado = mes.filter(d=>d.metodo===filtroActual);
-  filtrado = [...filtrado].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
-  document.getElementById('hist-list').innerHTML = filtrado.length
-    ? filtrado.map(d => txHTML(d, true)).join('')
-    : '<div class="empty-state"><div class="big">🔍</div><p>Sin resultados</p></div>';
+function clearMethods() {
+  ['nequi','bancolombia','efectivo'].forEach(m => { const el=document.getElementById('m-'+m); if(el) el.className='method-btn'; });
+  if(methodActual) document.getElementById('m-'+methodActual).className='method-btn active-'+methodActual;
 }
 
 function txHTML(d, withDelete=false) {
   const cats = [...CATS_GASTO,...CATS_INGRESO];
-  const catObj = cats.find(c=>c.k===d.cat) || {icon:'📦'};
-  const colorTipo = d.tipo==='ingreso' ? 'var(--accent)' : 'var(--danger)';
-  const sign = d.tipo==='ingreso' ? '+' : '-';
-  const badgeClass = d.tipo==='ingreso' ? 'badge-ingreso' : 'badge-'+d.metodo;
-  const badgeLabel = d.tipo==='ingreso' ? 'Ingreso' : d.metodo.charAt(0).toUpperCase()+d.metodo.slice(1);
+  const catObj = cats.find(c=>c.k===d.cat)||{icon:'📦'};
+  const colorTipo = d.tipo==='ingreso'?'var(--accent)':'var(--danger)';
+  const sign = d.tipo==='ingreso'?'+':'-';
+  const badgeClass = d.tipo==='ingreso'?'badge-ingreso':'badge-'+d.metodo;
+  const badgeLabel = d.tipo==='ingreso'?'Ingreso':d.metodo.charAt(0).toUpperCase()+d.metodo.slice(1);
   const fecha = new Date(d.fecha+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'short'});
   return `<div class="tx-item" data-tipo="${d.tipo}">
     <div class="tx-icon">${catObj.icon}</div>
@@ -790,35 +557,66 @@ function txHTML(d, withDelete=false) {
       <div class="tx-meta">${fecha} &nbsp;<span class="badge ${badgeClass}">${badgeLabel}</span></div>
     </div>
     <div class="tx-amount" style="color:${colorTipo}">${sign}${fmt(d.valor)}</div>
-    ${withDelete ? `<button class="delete-btn" onclick="eliminar(${d.id})">✕</button>` : ''}
+    ${withDelete?`<button class="delete-btn" onclick="window._del('${d._id}')">✕</button>`:''}
   </div>`;
 }
+window._del = eliminar;
 
-function eliminar(id) {
-  if(confirm('¿Eliminar este movimiento?')) {
-    datos = datos.filter(d => d.id !== id);
-    save();
-    renderHistorial();
-    renderDashboard();
-    toast('Eliminado ✓');
-  }
+function renderDashboard() {
+  const mes = getMes();
+  const ingresos = mes.filter(d=>d.tipo==='ingreso').reduce((a,b)=>a+b.valor,0);
+  const gastos = mes.filter(d=>d.tipo==='gasto').reduce((a,b)=>a+b.valor,0);
+  const balance = ingresos - gastos;
+  document.getElementById('dash-balance').textContent = fmt(balance);
+  document.getElementById('dash-balance').style.color = balance>=0?'var(--accent)':'var(--danger)';
+  document.getElementById('dash-ingresos').textContent = fmt(ingresos);
+  document.getElementById('dash-gastos').textContent = fmt(gastos);
+  document.getElementById('dash-count').textContent = mes.length;
+
+  const methods = ['nequi','bancolombia','efectivo'];
+  const mG = {}; methods.forEach(m => { mG[m]=mes.filter(d=>d.tipo==='gasto'&&d.metodo===m).reduce((a,b)=>a+b.valor,0); });
+  const maxM = Math.max(...Object.values(mG),1);
+  const colors = {nequi:'var(--nequi)',bancolombia:'var(--banco)',efectivo:'var(--efectivo)'};
+  const icons = {nequi:'💜',bancolombia:'💙',efectivo:'💵'};
+  document.getElementById('method-bars').innerHTML = methods.map(m =>
+    `<div class="method-bar-row">
+      <span class="method-bar-name">${icons[m]} ${m.charAt(0).toUpperCase()+m.slice(1)}</span>
+      <div class="method-bar-track"><div class="method-bar-fill" style="width:${(mG[m]/maxM*100).toFixed(1)}%;background:${colors[m]}"></div></div>
+      <span class="method-bar-val" style="color:${colors[m]}">${fmt(mG[m])}</span>
+    </div>`
+  ).join('');
+
+  const recientes = [...mes].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha)).slice(0,5);
+  document.getElementById('recent-list').innerHTML = recientes.length
+    ? recientes.map(d=>txHTML(d)).join('')
+    : '<div class="empty-state"><div class="big">📭</div><p>Sin movimientos este mes</p></div>';
 }
 
-// ===== RESUMEN =====
+function renderHistorial() {
+  const mes = getMes();
+  let f = mes;
+  if(filtroActual==='ingreso') f=mes.filter(d=>d.tipo==='ingreso');
+  else if(filtroActual==='gasto') f=mes.filter(d=>d.tipo==='gasto');
+  else if(['nequi','bancolombia','efectivo'].includes(filtroActual)) f=mes.filter(d=>d.metodo===filtroActual);
+  f = [...f].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  document.getElementById('hist-list').innerHTML = f.length
+    ? f.map(d=>txHTML(d,true)).join('')
+    : '<div class="empty-state"><div class="big">🔍</div><p>Sin resultados</p></div>';
+}
+
 function renderResumen() {
   const mes = getMes();
   const gastos = mes.filter(d=>d.tipo==='gasto');
   const catTotals = {};
-  gastos.forEach(d => { catTotals[d.cat] = (catTotals[d.cat]||0) + d.valor; });
+  gastos.forEach(d => { catTotals[d.cat]=(catTotals[d.cat]||0)+d.valor; });
   const sorted = Object.entries(catTotals).sort((a,b)=>b[1]-a[1]);
-  const total = gastos.reduce((a,b)=>a+b.valor,0) || 1;
-  const cats = [...CATS_GASTO,...CATS_INGRESO];
-
+  const total = gastos.reduce((a,b)=>a+b.valor,0)||1;
+  const allCats = [...CATS_GASTO,...CATS_INGRESO];
   document.getElementById('cat-resumen').innerHTML = sorted.length
-    ? `<div class="method-bars">${sorted.map(([k,v]) => {
-        const c = cats.find(c=>c.k===k)||{icon:'📦',label:k};
-        const color = CAT_COLORS[k] || '#6b7280';
-        const pct = (v/total*100).toFixed(0);
+    ? `<div class="method-bars">${sorted.map(([k,v])=>{
+        const c=allCats.find(c=>c.k===k)||{icon:'📦',label:k};
+        const color=CAT_COLORS[k]||'#6b7280';
+        const pct=(v/total*100).toFixed(0);
         return `<div class="method-bar-row">
           <span class="method-bar-name" style="font-size:12px">${c.icon} ${c.label}</span>
           <div class="method-bar-track"><div class="method-bar-fill" style="width:${pct}%;background:${color}"></div></div>
@@ -827,72 +625,49 @@ function renderResumen() {
       }).join('')}</div>`
     : '<div class="empty-state"><div class="big">📊</div><p>Sin gastos este mes</p></div>';
 
-  // Top gastos
-  const topGastos = [...gastos].sort((a,b)=>b.valor-a.valor).slice(0,5);
-  document.getElementById('top-gastos').innerHTML = topGastos.length
-    ? topGastos.map(d => txHTML(d)).join('')
+  const topG = [...gastos].sort((a,b)=>b.valor-a.valor).slice(0,5);
+  document.getElementById('top-gastos').innerHTML = topG.length
+    ? topG.map(d=>txHTML(d)).join('')
     : '<div class="empty-state"><div class="big">🎉</div><p>Sin gastos registrados</p></div>';
 }
 
-// ===== EXCEL EXPORT =====
+// ===== EXPORT =====
 function toCSV(rows) {
-  const header = 'Fecha,Tipo,Descripción,Categoría,Método,Valor\n';
-  const lines = rows.map(d =>
-    `${d.fecha},${d.tipo},"${d.desc}",${d.cat},${d.metodo},${d.valor}`
-  );
-  return header + lines.join('\n');
+  const h = 'Fecha,Tipo,Descripción,Categoría,Método,Valor\n';
+  return h + rows.map(d=>`${d.fecha},${d.tipo},"${d.desc}",${d.cat},${d.metodo},${d.valor}`).join('\n');
 }
-
 function downloadCSV(content, filename) {
-  const blob = new Blob(['\uFEFF'+content], {type:'text/csv;charset=utf-8;'});
+  const blob = new Blob(['\uFEFF'+content],{type:'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = filename;
+  a.href=url; a.download=filename;
   document.body.appendChild(a); a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  document.body.removeChild(a); URL.revokeObjectURL(url);
 }
-
-function exportExcel() {
+window.exportCSV = function() {
   const mes = getMes();
-  if(!mes.length) { toast('Sin datos este mes'); return; }
-  downloadCSV(toCSV(mes), `finanzas_${MESES[currentMonth]}_${currentYear}.csv`);
-  toast('📊 Descargando CSV...');
-}
-
-function exportExcelAll() {
-  if(!datos.length) { toast('Sin datos registrados'); return; }
-  const sorted = [...datos].sort((a,b)=>new Date(a.fecha)-new Date(b.fecha));
-  downloadCSV(toCSV(sorted), `finanzas_completo.csv`);
-  toast('📁 Descargando CSV completo...');
-}
+  if(!mes.length){toast('Sin datos este mes');return;}
+  downloadCSV(toCSV(mes),`finanzas_${MESES[currentMonth]}_${currentYear}.csv`);
+  toast('📊 Descargando...');
+};
+window.exportCSVAll = function() {
+  if(!datos.length){toast('Sin datos registrados');return;}
+  downloadCSV(toCSV([...datos].sort((a,b)=>new Date(a.fecha)-new Date(b.fecha))),'finanzas_completo.csv');
+  toast('📁 Descargando todo...');
+};
 
 // ===== TOAST =====
-function toast(msg) {
+window.toast = function(msg) {
   const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2500);
-}
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
+};
 
 // ===== INIT =====
-document.getElementById('month-label').textContent = MESES[currentMonth].substring(0,3) + ' ' + currentYear;
+document.getElementById('month-label').textContent = MESES[currentMonth].substring(0,3)+' '+currentYear;
 document.getElementById('inp-fecha').value = new Date().toISOString().split('T')[0];
 setTipo('ingreso');
-renderDashboard();
-renderCats();
-
-// Service Worker para PWA
-if('serviceWorker' in navigator) {
-  const sw = `
-    const CACHE = 'mf-v1';
-    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html']))));
-    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
-  `;
-  const blob = new Blob([sw], {type:'application/javascript'});
-  const url = URL.createObjectURL(blob);
-  navigator.serviceWorker.register(url).catch(()=>{});
-}
+cargarDatos();
 </script>
 </body>
 </html>
