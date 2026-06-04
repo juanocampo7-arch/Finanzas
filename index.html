@@ -436,6 +436,22 @@ async function cargarDatos() {
     toast('⚠️ Sin conexión, modo offline');
     datos = JSON.parse(localStorage.getItem('mf_backup') || '[]');
   }
+  // Si no hay datos en el mes actual, ir al mes más reciente con datos
+  if (datos.length > 0) {
+    const hayCurrent = datos.some(d => {
+      const f = new Date(d.fecha + 'T12:00:00');
+      return f.getMonth() === currentMonth && f.getFullYear() === currentYear;
+    });
+    if (!hayCurrent) {
+      const masReciente = datos.reduce((max, d) => {
+        const f = new Date(d.fecha + 'T12:00:00');
+        return f > max ? f : max;
+      }, new Date('2000-01-01'));
+      currentMonth = masReciente.getMonth();
+      currentYear = masReciente.getFullYear();
+      document.getElementById('month-label').textContent = MESES[currentMonth].substring(0,3) + ' ' + currentYear;
+    }
+  }
   document.getElementById('loading-screen').style.display = 'none';
   renderDashboard();
 }
