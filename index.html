@@ -707,11 +707,26 @@ function renderDeudas() {
 
 window._cobrar = async function(id, nombre, valor) {
   if(!confirm(`¿Cobraste todo lo de ${nombre}? ($${Math.round(valor).toLocaleString('es-CO')})`)) return;
+  const hoy = new Date().toISOString().split('T')[0];
   try {
-    const { updateDoc, doc: fsDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const { updateDoc, doc: fsDoc, addDoc: addDocFn, collection: colFn } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    // 1. Marcar deuda como cobrada
     await updateDoc(fsDoc(db, COL, id), { cat: 'deuda_cobrada' });
     const idx = datos.findIndex(d=>d._id===id);
     if(idx>=0) datos[idx].cat = 'deuda_cobrada';
+    // 2. Registrar como ingreso real
+    const ingresoReal = {
+      tipo: 'ingreso',
+      desc: `Cobro ${nombre}`,
+      valor: valor,
+      cat: 'deuda_cobrada',
+      metodo: 'ingreso',
+      fecha: hoy,
+      creadoEn: new Date().toISOString()
+    };
+    const docRef = await addDocFn(colFn(db, COL), ingresoReal);
+    ingresoReal._id = docRef.id;
+    datos.unshift(ingresoReal);
     localStorage.setItem('mf_backup', JSON.stringify(datos));
     toast('💰 ¡Deuda cobrada completa!');
     renderDashboard(); renderHistorial();
@@ -748,11 +763,26 @@ window.confirmarAbono = async function(id, nombre, valorTotal) {
     return;
   }
   const nuevoSaldo = valorTotal - abono;
+  const hoy = new Date().toISOString().split('T')[0];
   try {
-    const { updateDoc, doc: fsDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const { updateDoc, doc: fsDoc, addDoc: addDocFn, collection: colFn } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    // 1. Reducir saldo de la deuda pendiente
     await updateDoc(fsDoc(db, COL, id), { valor: nuevoSaldo });
     const idx = datos.findIndex(d=>d._id===id);
     if(idx>=0) datos[idx].valor = nuevoSaldo;
+    // 2. Registrar el abono como ingreso real (deuda_cobrada)
+    const ingresoAbono = {
+      tipo: 'ingreso',
+      desc: `Abono ${nombre}`,
+      valor: abono,
+      cat: 'deuda_cobrada',
+      metodo: 'ingreso',
+      fecha: hoy,
+      creadoEn: new Date().toISOString()
+    };
+    const docRef = await addDocFn(colFn(db, COL), ingresoAbono);
+    ingresoAbono._id = docRef.id;
+    datos.unshift(ingresoAbono);
     localStorage.setItem('mf_backup', JSON.stringify(datos));
     cerrarModal();
     toast(`✅ Abono de ${fmt(abono)} registrado. Saldo: ${fmt(nuevoSaldo)}`);
