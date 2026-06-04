@@ -268,6 +268,46 @@ nav {
   font-family: 'DM Sans', sans-serif;
 }
 .cobrar-btn:hover { background: rgba(74,222,128,0.22); }
+.abonar-btn {
+  background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.3);
+  color: var(--accent2); font-size: 11px; font-weight: 600;
+  padding: 5px 10px; border-radius: 7px; cursor: pointer;
+  white-space: nowrap; flex-shrink: 0; transition: background 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.abonar-btn:hover { background: rgba(34,211,238,0.2); }
+.deuda-btns { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+
+/* MODAL ABONO */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  z-index: 500; display: flex; align-items: flex-end; justify-content: center;
+  animation: fadeIn 0.15s ease;
+}
+.modal-box {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 24px 20px 36px; width: 100%; max-width: 480px;
+}
+.modal-box h3 { font-family: 'Syne', sans-serif; font-size: 16px; margin-bottom: 4px; }
+.modal-box .modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+.modal-box input {
+  width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 14px; color: var(--accent);
+  font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700;
+  outline: none; margin-bottom: 12px;
+}
+.modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-btn-cancel {
+  padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border2);
+  background: var(--surface2); color: var(--muted); font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.modal-btn-ok {
+  padding: 14px; border-radius: var(--radius-sm); border: none;
+  background: var(--accent2); color: #071a1e; font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -279,6 +319,8 @@ nav {
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div id="modal-abono" style="display:none"></div>
 
 <div class="header">
   <div>
@@ -639,7 +681,6 @@ function renderDashboard() {
 }
 
 function renderDeudas() {
-  // Mostrar TODAS las deudas pendientes (no filtradas por mes)
   const pendientes = datos.filter(d => d.cat === 'deuda_pendiente').sort((a,b)=>b.valor-a.valor);
   const section = document.getElementById('deudas-section');
   if (!pendientes.length) { section.style.display = 'none'; return; }
@@ -647,31 +688,76 @@ function renderDeudas() {
   const total = pendientes.reduce((a,b)=>a+b.valor,0);
   document.getElementById('deudas-total').textContent = fmt(total);
   document.getElementById('deudas-list').innerHTML = pendientes.map(d => {
+    const nombre = d.desc.replace(' (pendiente)','').replace('Deuda ','');
     const fecha = new Date(d.fecha+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'});
     return `<div class="tx-item deuda-item" data-tipo="ingreso">
       <div class="tx-icon">🕐</div>
       <div class="tx-info">
-        <div class="tx-desc">${d.desc.replace(' (pendiente)','')}</div>
+        <div class="tx-desc">${nombre}</div>
         <div class="tx-meta">${fecha} &nbsp;<span class="badge" style="background:rgba(245,158,11,0.15);color:#f59e0b">Pendiente</span></div>
       </div>
       <div class="tx-amount" style="color:#f59e0b">+${fmt(d.valor)}</div>
-      <button class="cobrar-btn" onclick="window._cobrar('${d._id}','${d.desc.replace(/'/g,"\\'")}',${d.valor})">✓ Cobré</button>
+      <div class="deuda-btns">
+        <button class="cobrar-btn" onclick="window._cobrar('${d._id}','${nombre}',${d.valor})">✓ Todo</button>
+        <button class="abonar-btn" onclick="window._abonar('${d._id}','${nombre}',${d.valor})">↓ Abono</button>
+      </div>
     </div>`;
   }).join('');
 }
 
-window._cobrar = async function(id, desc, valor) {
-  if(!confirm(`¿Ya cobraste "${desc.replace(' (pendiente)','')}"?`)) return;
+window._cobrar = async function(id, nombre, valor) {
+  if(!confirm(`¿Cobraste todo lo de ${nombre}? ($${Math.round(valor).toLocaleString('es-CO')})`)) return;
   try {
-    // Cambiar categoría a deuda_cobrada
     const { updateDoc, doc: fsDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
     await updateDoc(fsDoc(db, COL, id), { cat: 'deuda_cobrada' });
     const idx = datos.findIndex(d=>d._id===id);
     if(idx>=0) datos[idx].cat = 'deuda_cobrada';
     localStorage.setItem('mf_backup', JSON.stringify(datos));
-    toast('💰 ¡Deuda cobrada!');
+    toast('💰 ¡Deuda cobrada completa!');
     renderDashboard(); renderHistorial();
   } catch(e) { toast('❌ Error al actualizar'); }
+};
+
+window._abonar = function(id, nombre, valorTotal) {
+  const modal = document.getElementById('modal-abono');
+  modal.style.display = 'flex';
+  modal.innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)cerrarModal()">
+    <div class="modal-box">
+      <h3>↓ Abono de ${nombre}</h3>
+      <div class="modal-sub">Deuda total: <strong style="color:#f59e0b">+${fmt(valorTotal)}</strong></div>
+      <input type="number" id="inp-abono" placeholder="0" inputmode="decimal" autofocus>
+      <div class="modal-btns">
+        <button class="modal-btn-cancel" onclick="cerrarModal()">Cancelar</button>
+        <button class="modal-btn-ok" onclick="confirmarAbono('${id}','${nombre}',${valorTotal})">Registrar abono</button>
+      </div>
+    </div>
+  </div>`;
+  setTimeout(()=>document.getElementById('inp-abono')?.focus(), 100);
+};
+
+window.cerrarModal = function() {
+  document.getElementById('modal-abono').style.display = 'none';
+};
+
+window.confirmarAbono = async function(id, nombre, valorTotal) {
+  const abono = parseFloat(document.getElementById('inp-abono').value);
+  if(!abono || abono <= 0) { toast('Ingresa un valor válido ⚠️'); return; }
+  if(abono >= valorTotal) {
+    cerrarModal();
+    window._cobrar(id, nombre, valorTotal);
+    return;
+  }
+  const nuevoSaldo = valorTotal - abono;
+  try {
+    const { updateDoc, doc: fsDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    await updateDoc(fsDoc(db, COL, id), { valor: nuevoSaldo });
+    const idx = datos.findIndex(d=>d._id===id);
+    if(idx>=0) datos[idx].valor = nuevoSaldo;
+    localStorage.setItem('mf_backup', JSON.stringify(datos));
+    cerrarModal();
+    toast(`✅ Abono de ${fmt(abono)} registrado. Saldo: ${fmt(nuevoSaldo)}`);
+    renderDashboard(); renderHistorial();
+  } catch(e) { toast('❌ Error al registrar abono'); }
 };
 
 function renderHistorial() {
