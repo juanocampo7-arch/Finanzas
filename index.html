@@ -634,26 +634,62 @@ function renderChart(){
 }
 
 // ===== SALDOS POR BILLETERA =====
+const SALDO_INICIAL_KEY='mf_saldo_inicial_v1';
+function getSaldoInicial(){try{return JSON.parse(localStorage.getItem(SALDO_INICIAL_KEY)||'{}');}catch(e){return {};}}
+function saveSaldoInicial(obj){localStorage.setItem(SALDO_INICIAL_KEY,JSON.stringify(obj));}
+
 function renderSaldos(mesReal){
   const methods=['nequi','bancolombia','efectivo'];
   const icons={nequi:'💜',bancolombia:'💙',efectivo:'💵'};
   const names={nequi:'Nequi',bancolombia:'Banco',efectivo:'Efectivo'};
   const colors={nequi:'var(--nequi)',bancolombia:'var(--banco)',efectivo:'var(--efectivo)'};
-  document.getElementById('saldos-billetera').innerHTML=`<div class="saldo-grid">${
-    methods.map(m=>{
-      const ingMes=mesReal.filter(d=>d.tipo==='ingreso'&&d.metodo===m).reduce((a,b)=>a+b.valor,0);
-      const gasMes=mesReal.filter(d=>d.tipo==='gasto'&&d.metodo===m).reduce((a,b)=>a+b.valor,0);
-      const saldo=ingMes-gasMes;
-      return `<div class="saldo-card">
-        <div class="s-icon">${icons[m]}</div>
-        <div class="s-name">${names[m]}</div>
-        <div class="s-ing">+${fmt(ingMes)}</div>
-        <div class="s-gas">-${fmt(gasMes)}</div>
-        <div class="s-val" style="color:${saldo>=0?colors[m]:'var(--danger)'}">${fmt(saldo)}</div>
-      </div>`;
-    }).join('')
-  }</div>`;
+  const inicial=getSaldoInicial();
+  const todosReales=datos.filter(d=>d.cat!=='deuda_pendiente');
+
+  document.getElementById('saldos-billetera').innerHTML=`
+    <div class="saldo-grid">${
+      methods.map(m=>{
+        const base=inicial[m]||0;
+        const ingTotal=todosReales.filter(d=>d.tipo==='ingreso'&&d.metodo===m).reduce((a,b)=>a+b.valor,0);
+        const gasTotal=todosReales.filter(d=>d.tipo==='gasto'&&d.metodo===m).reduce((a,b)=>a+b.valor,0);
+        const saldo=base+ingTotal-gasTotal;
+        return `<div class="saldo-card" onclick="window._editarSaldoInicial('${m}')">
+          <div class="s-icon">${icons[m]}</div>
+          <div class="s-name">${names[m]}</div>
+          <div class="s-val" style="color:${saldo>=0?colors[m]:'var(--danger)'}">${fmt(saldo)}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px">toca para editar</div>
+        </div>`;
+      }).join('')
+    }</div>`;
 }
+
+window._editarSaldoInicial=function(m){
+  const inicial=getSaldoInicial();
+  const names={nequi:'Nequi 💜',bancolombia:'Bancolombia 💙',efectivo:'Efectivo 💵'};
+  abrirModal(`<h3>💳 Saldo actual en ${names[m]}</h3>
+    <div class="modal-sub">Ingresa cuánto tienes ahora mismo en ${names[m]}. La app calculará el saldo inicial restando tus movimientos registrados.</div>
+    <input class="modal-input" type="number" id="inp-modal" placeholder="0" inputmode="decimal" value="${inicial[m]||''}">
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" onclick="cerrarModal()">Cancelar</button>
+      <button class="modal-btn-ok" onclick="confirmarSaldoReal('${m}')">Guardar</button>
+    </div>`);
+};
+
+window.confirmarSaldoReal=function(m){
+  const saldoReal=parseFloat(document.getElementById('inp-modal').value);
+  if(isNaN(saldoReal)||saldoReal<0){toast('Ingresa un valor válido ⚠️');return;}
+  // Calcular saldo inicial = saldo real actual - (ingresos históricos - gastos históricos)
+  const todosReales=datos.filter(d=>d.cat!=='deuda_pendiente');
+  const ingTotal=todosReales.filter(d=>d.tipo==='ingreso'&&d.metodo===m).reduce((a,b)=>a+b.valor,0);
+  const gasTotal=todosReales.filter(d=>d.tipo==='gasto'&&d.metodo===m).reduce((a,b)=>a+b.valor,0);
+  const saldoInicial=saldoReal-(ingTotal-gasTotal);
+  const obj=getSaldoInicial();
+  obj[m]=saldoInicial;
+  saveSaldoInicial(obj);
+  cerrarModal();
+  toast('✅ Saldo actualizado');
+  renderDashboard();
+};
 
 // ===== DEUDAS =====
 function renderDeudas(){
